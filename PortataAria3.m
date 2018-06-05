@@ -9,25 +9,41 @@ close all
 load("portata_aria2.mat");
 
 % Normalizzo le variabili
-giri = giri / norm(giri);
-pressione = pressione / norm(pressione);
-portata = portata / norm(portata);
+girinorm = giri / norm(giri);
+pressionenorm = pressione / norm(pressione);
+portatanorm = portata / norm(portata);
 
 
 % Guardo un primo plot
-scatter3(giri, pressione, portata)
+figure(1)
+scatter3(girinorm, pressionenorm, portatanorm)
+title("Scatter Plot")
 xlabel('giri')
 ylabel('pressione')
 zlabel('portata')
 
-
-[trainInd, valInd, testInd] = dividerand(length(portata),0.7,0.3,0);
+%divido in trainInd valInd testInd 
+[trainInd, valInd, testInd] = dividerand(length(portatanorm),0.7,0.3,0);
 
 pause
 
-X = [giri(trainInd), pressione(trainInd)];
+X = [girinorm(trainInd), pressionenorm(trainInd)]; %utilizzo gli indici di girinorm selezionati da trainInd
 
-LM = stepwiselm(X, portata(trainInd))
+mdl = stepwiselm(X, portatanorm(trainInd))
+
+%vettori di test
+X=linspace(min(girinorm),max(girinorm),10);
+Y=linspace(min(girinorm),max(girinorm),10);
+[X,Y]=meshgrid(X,Y);
+Zlin=feval(mdl,X,Y);
+surf(X,Y,reshape(Zlin,size(X)))
+
+
+
+%ESERCIZIO
+%phi
+%meshgrid : Serve per vedere la rapp. in 3d e anche lo scatter sulla
+%superficie; è utile per verificare COP
 
 
 
